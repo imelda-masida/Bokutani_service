@@ -4,34 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="scritp.js"></script>
+    <script src="script.js" defer></script>
     <title>BOKUTANI_service</title>
 </head>
 <body>
-    <header>
-        <h1>Bienvenue sur BOKUTANI</h1>
-        <p>Veillez choisir une salle pour votre reunion.</p>
-    </header>
+
     <main class="meet-room">
-        <div class="salle">
-         <h2>SALLE A</h2>
-         <span class="Status">Libre</span>
-         <button onclick="ouvrirResevation('SALLE A')">Reserver</button>
-         <button onclick="ouvrirResevation('SALLE B')">Maintenance</button>
+        <h1>Bienvenue sur BOKUTANI</h1>
+        <p>Veuillez choisir une salle pour votre réunion.</p>
+        <div class="salle" id="salle-a">
+            <h2>SALLE A</h2>
+            <span class="status badge-libre">Libre</span>
+            <div class="actions">
+                <button onclick="ouvrirReservation('SALLE A')">Réserver</button>
+                <button onclick="ouvrirMaintenance('SALLE A')" class="btn-maint">Maintenance</button>
+            </div>
         </div>
 
-        <div class="salle">
-         <h2>SALLE B</h2>
-         <span class="status">Libre</span>
-         <button onclick="ouvrirResevation('SALLE B')">Reserver</button>
-         <button onclick="ouvrirResevation('SALLE B')">Maintenance</button>
+        
+        <div class="salle" id="salle-b">
+            <h2>SALLE B</h2>
+            <span class="status badge-libre">Libre</span>
+            <div class="actions">
+                <button onclick="ouvrirReservation('SALLE B')">Réserver</button>
+                <button onclick="ouvrirMaintenance('SALLE B')" class="btn-maint">Maintenance</button>
+            </div>
         </div>
       
-        <div class="salle">
-         <h2>SALLE C</h2>
-         <span class="status">Libre</span>
-         <button onclick="ouvrirResevation('SALLE C')">Reserver</button>
-         <button onclick="ouvrirResevation('SALLE C')">Maintenance</button>
+    
+        <div class="salle" id="salle-c">
+            <h2>SALLE C</h2>
+            <span class="status badge-libre">Libre</span>
+            <div class="actions">
+                <button onclick="ouvrirReservation('SALLE C')">Réserver</button>
+                <button onclick="ouvrirMaintenance('SALLE C')" class="btn-maint">Maintenance</button>
+            </div>
         </div>
     </main>
 </body>

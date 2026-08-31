@@ -1,0 +1,40 @@
+body {
+
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #021068; 
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    
+    background-image: url("https://group-tia.com/wp-content/uploads/2024/04/logo-GROUP-tia-inverse.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;  
+}
+
+
+.modal-content input { width: 100%; padding: 8px; margin-top: 5px; }
+.badge-libre { background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; }
+/*.badge-occupee { background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; }
+.badge-maintenance { background-color: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; }*/
+
+.meet-room{
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 2px;
+    width: 500px;
+    border-radius: 5px;
+    
+    }
+
+
+.salle{
+    
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    background-color: white;
+    width: 300px;
+    
+}
