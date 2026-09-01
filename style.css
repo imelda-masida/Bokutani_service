@@ -1,40 +1,163 @@
-body {
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+body {
     width: 100%;
     min-height: 100vh;
-    justify-content: center;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre tous les éléments horizontalement */
     background-color: #021068; 
-    position: relative;
-    overflow: hidden;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 30px 20px;
+}
+
+
+.logo-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.floating-logo {
+    width: 620px; 
+    height: auto;
+}
+
+
+header {
     text-align: center;
-    
-    background-image: url("https://group-tia.com/wp-content/uploads/2024/04/logo-GROUP-tia-inverse.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;  
+    margin-bottom: 30px;
 }
 
+header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+}
 
-.modal-content input { width: 100%; padding: 8px; margin-top: 5px; }
-.badge-libre { background-color: #28a745; color: white; padding: 4px 8px; border-radius: 4px; }
-/*.badge-occupee { background-color: #dc3545; color: white; padding: 4px 8px; border-radius: 4px; }
-.badge-maintenance { background-color: #ffc107; color: black; padding: 4px 8px; border-radius: 4px; }*/
+.role-selector {
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: inline-block;
+}
 
-.meet-room{
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    padding: 2px;
-    width: 500px;
-    border-radius: 5px;
-    
-    }
+.role-selector select {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    font-weight: bold;
+}
 
+/* Cartes des salles */
+.meet-room {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
 
-.salle{
-    
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
+.salle {
     background-color: white;
-    width: 300px;
-    
+    color: #333;
+    border-radius: 8px;
+    width: 280px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
+
+.status {
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.badge-libre { background-color: #28a745; color: white; }
+.badge-occupee { background-color: #dc3545; color: white; }
+.badge-maintenance { background-color: #ffc107; color: black; }
+
+.details-occupation {
+    background-color: #f8f9fa;
+    border-left: 3px solid #021068;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: left;
+}
+
+.actions { width: 100%; }
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #021068;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover { opacity: 0.9; }
+.btn-cancel { background-color: #dc3545; }
+.btn-pdf { background-color: #17a2b8; margin-top: 10px; }
+
+
+.admin-panel {
+    margin-top: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.admin-content {
+    background: white;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+#historique-liste {
+    max-height: 180px;
+    overflow-y: auto;
+    margin: 15px 0;
+    padding-left: 20px;
+    font-size: 0.9rem;
+}
+
+/* Modale */
+.hidden { display: none !important; }
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white; color: #333; padding: 25px;
+    border-radius: 8px; width: 320px;
+}
+
+.form-group { margin-bottom: 12px; text-align: left; }
+.form-group label { font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 4px; }
+.form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+.modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+.btn-confirm { background-color: #28a745; }
+.btn-close { background-color: #6c757d; }

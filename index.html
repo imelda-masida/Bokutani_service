@@ -3,43 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bokutani</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js" defer></script>
-    <title>BOKUTANI_service</title>
 </head>
 <body>
 
+    
+    <div class="logo-wrapper">
+        <img src="https://group-tia.com/wp-content/uploads/2024/04/logo-GROUP-tia-inverse.png" alt="Logo Group TIA" class="floating-logo">
+    </div>
+
+    <header>
+        <h1>Bienvenue sur Bokutani !</h1>
+        <p>Veuillez choisir une salle de réunion.</p>
+        
+        <div class="role-selector">
+            <label for="user-role">Rôle actuel :</label>
+            <select id="user-role" onchange="changerRole()">
+                <option value="UTILISATEUR">Utilisateur (Réunion)</option>
+                <option value="MAINTENANCE">Agent Maintenance</option>
+                <option value="ADMIN">Administrateur</option>
+            </select>
+        </div>
+    </header>
+
     <main class="meet-room">
-        <h1>Bienvenue sur BOKUTANI</h1>
-        <p>Veuillez choisir une salle pour votre réunion.</p>
-        <div class="salle" id="salle-a">
+        
+        <div class="salle" id="card-salle-a">
             <h2>SALLE A</h2>
-            <span class="status badge-libre">Libre</span>
+            <span class="status badge-libre" id="status-salle-a">Libre</span>
+            <div class="details-occupation hidden" id="details-salle-a"></div>
             <div class="actions">
-                <button onclick="ouvrirReservation('SALLE A')">Réserver</button>
-                <button onclick="ouvrirMaintenance('SALLE A')" class="btn-maint">Maintenance</button>
+                <button class="btn-res" onclick="ouvrirFormulaire('SALLE A')">Réserver</button>
+                <button class="btn-cancel hidden" id="btn-cancel-salle-a" onclick="demanderAnnulation('SALLE A')">Annuler</button>
             </div>
         </div>
 
         
-        <div class="salle" id="salle-b">
+        <div class="salle" id="card-salle-b">
             <h2>SALLE B</h2>
-            <span class="status badge-libre">Libre</span>
+            <span class="status badge-libre" id="status-salle-b">Libre</span>
+            <div class="details-occupation hidden" id="details-salle-b"></div>
             <div class="actions">
-                <button onclick="ouvrirReservation('SALLE B')">Réserver</button>
-                <button onclick="ouvrirMaintenance('SALLE B')" class="btn-maint">Maintenance</button>
+                <button class="btn-res" onclick="ouvrirFormulaire('SALLE B')">Réserver</button>
+                <button class="btn-cancel hidden" id="btn-cancel-salle-b" onclick="demanderAnnulation('SALLE B')">Annuler</button>
             </div>
         </div>
-      
-    
-        <div class="salle" id="salle-c">
+
+        
+        <div class="salle" id="card-salle-c">
             <h2>SALLE C</h2>
-            <span class="status badge-libre">Libre</span>
+            <span class="status badge-libre" id="status-salle-c">Libre</span>
+            <div class="details-occupation hidden" id="details-salle-c"></div>
             <div class="actions">
-                <button onclick="ouvrirReservation('SALLE C')">Réserver</button>
-                <button onclick="ouvrirMaintenance('SALLE C')" class="btn-maint">Maintenance</button>
+                <button class="btn-res" onclick="ouvrirFormulaire('SALLE C')">Réserver</button>
+                <button class="btn-cancel hidden" id="btn-cancel-salle-c" onclick="demanderAnnulation('SALLE C')">Annuler</button>
             </div>
         </div>
     </main>
+
+    
+    <section id="admin-panel" class="admin-panel hidden">
+        <div class="admin-content">
+            <h3>Espace Administration</h3>
+            <p>Historique global et suivi hebdomadaire :</p>
+            <ul id="historique-liste"></ul>
+            <button onclick="genererPDFHebdomadaire()" class="btn-pdf">Générer le compte-rendu</button>
+        </div>
+    </section>
+
+    
+    <div id="modal-form" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Créer une réservation</h3>
+            <form id="booking-form">
+                <input type="hidden" id="salle-nom">
+
+                <div id="group-dept" class="form-group hidden">
+                    <label for="dept-select">Département responsable :</label>
+                    <select id="dept-select">
+                        <option value="Informatique (IT)">Informatique (IT)</option>
+                        <option value="Logistique">Logistique & Maintenance</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="auteur">Auteur :</label>
+                    <input type="text" id="auteur" placeholder="Votre nom" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="motif">Motif :</label>
+                    <input type="text" id="motif" placeholder="Ex: Revue de projet / Panne projecteur" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duree">Durée (minutes) :</label>
+                    <input type="number" id="duree" min="1" value="30" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pin-code">Code PIN à 4 chiffres (requis pour annuler) :</label>
+                    <input type="password" id="pin-code" maxlength="4" pattern="\d{4}" placeholder="Ex: 1234" required>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-confirm">Valider</button>
+                    <button type="button" onclick="fermerFormulaire()" class="btn-close">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
