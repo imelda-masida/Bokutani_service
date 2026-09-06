@@ -29,49 +29,97 @@
         </div>
     </header>
 
-    <main class="meet-room">
-        
-        <!-- SALLE A -->
-        <div class="salle" id="card-salle-a">
-            <h2>SALLE A</h2>
-            <span class="status badge-libre" id="status-salle-a">Libre</span>
-            <div class="details-occupation hidden" id="details-salle-a"></div>
-            <div class="actions">
-                <button class="btn-res" onclick="ouvrirFormulaire('SALLE A')">Réserver</button>
-                <button class="btn-cancel hidden" id="btn-cancel-salle-a" onclick="demanderAnnulation('SALLE A')">Annuler</button>
+    <!-- VUE UTILISATEUR / MAINTENANCE (Salles) -->
+    <section id="user-view">
+        <main class="meet-room">
+            
+            <!-- SALLE A -->
+            <div class="salle" id="card-salle-a">
+                <h2>SALLE A</h2>
+                <span class="status badge-libre" id="status-salle-a">Libre</span>
+                <div class="details-occupation hidden" id="details-salle-a"></div>
+                <div class="actions">
+                    <button class="btn-res" onclick="ouvrirFormulaire('SALLE A')">Réserver</button>
+                    <button class="btn-cancel hidden" id="btn-cancel-salle-a" onclick="demanderAnnulation('SALLE A')">Annuler</button>
+                </div>
             </div>
-        </div>
 
-        <!-- SALLE B -->
-        <div class="salle" id="card-salle-b">
-            <h2>SALLE B</h2>
-            <span class="status badge-libre" id="status-salle-b">Libre</span>
-            <div class="details-occupation hidden" id="details-salle-b"></div>
-            <div class="actions">
-                <button class="btn-res" onclick="ouvrirFormulaire('SALLE B')">Réserver</button>
-                <button class="btn-cancel hidden" id="btn-cancel-salle-b" onclick="demanderAnnulation('SALLE B')">Annuler</button>
+            <!-- SALLE B -->
+            <div class="salle" id="card-salle-b">
+                <h2>SALLE B</h2>
+                <span class="status badge-libre" id="status-salle-b">Libre</span>
+                <div class="details-occupation hidden" id="details-salle-b"></div>
+                <div class="actions">
+                    <button class="btn-res" onclick="ouvrirFormulaire('SALLE B')">Réserver</button>
+                    <button class="btn-cancel hidden" id="btn-cancel-salle-b" onclick="demanderAnnulation('SALLE B')">Annuler</button>
+                </div>
             </div>
-        </div>
 
-        <!-- SALLE C -->
-        <div class="salle" id="card-salle-c">
-            <h2>SALLE C</h2>
-            <span class="status badge-libre" id="status-salle-c">Libre</span>
-            <div class="details-occupation hidden" id="details-salle-c"></div>
-            <div class="actions">
-                <button class="btn-res" onclick="ouvrirFormulaire('SALLE C')">Réserver</button>
-                <button class="btn-cancel hidden" id="btn-cancel-salle-c" onclick="demanderAnnulation('SALLE C')">Annuler</button>
+            <!-- SALLE C -->
+            <div class="salle" id="card-salle-c">
+                <h2>SALLE C</h2>
+                <span class="status badge-libre" id="status-salle-c">Libre</span>
+                <div class="details-occupation hidden" id="details-salle-c"></div>
+                <div class="actions">
+                    <button class="btn-res" onclick="ouvrirFormulaire('SALLE C')">Réserver</button>
+                    <button class="btn-cancel hidden" id="btn-cancel-salle-c" onclick="demanderAnnulation('SALLE C')">Annuler</button>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </section>
 
-    <!-- ESPACE ADMINISTRATION -->
+    <!-- ESPACE DÉDIÉ ADMINISTRATEUR (DASHBOARD) -->
     <section id="admin-panel" class="admin-panel hidden">
-        <div class="admin-content">
-            <h3>Espace Administration</h3>
-            <p>Historique global et suivi hebdomadaire :</p>
-            <ul id="historique-liste"></ul>
-            <button onclick="genererPDFHebdomadaire()" class="btn-pdf">Générer le compte-rendu</button>
+        <div class="admin-dashboard">
+            <h2>Tableau de Bord Administrateur</h2>
+            
+            <!-- Statistiques -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="stat-total-res">0</span>
+                    <span class="stat-label">Réservations globales</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="stat-salles-occupees">0 / 3</span>
+                    <span class="stat-label">Salles occupées</span>
+                </div>
+            </div>
+
+            <!-- Contrôle direct des salles -->
+            <div class="admin-section">
+                <h3>Contrôle direct des salles</h3>
+                <div class="admin-salles-control" id="admin-salles-list"></div>
+            </div>
+
+            <!-- Historique et Rapports -->
+            <div class="admin-section">
+                <h3>Historique global des réservations</h3>
+                <ul id="historique-liste"></ul>
+
+                <div class="admin-actions">
+                    <button onclick="genererPDFHebdomadaire()" class="btn-pdf">Exporter en PDF</button>
+                    <button onclick="viderToutLHistorique()" class="btn-clear-history">Vider l'historique</button>
+                </div>
+            </div>
+
+            <!-- Sécurité & Mot de passe -->
+            <div class="admin-section">
+                <h3>Sécurité & Accès</h3>
+                <form id="form-change-password" onsubmit="modifierMotDePasseAdmin(event)" class="admin-password-form">
+                    <div class="form-group-inline">
+                        <div class="form-group">
+                            <label for="new-pass">Nouveau mot de passe :</label>
+                            <input type="password" id="new-pass" placeholder="Nouveau mot de passe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-pass">Confirmer le mot de passe :</label>
+                            <input type="password" id="confirm-pass" placeholder="Confirmez" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-security">Mettre à jour le mot de passe</button>
+                </form>
+            </div>
+
         </div>
     </section>
 
@@ -100,15 +148,17 @@
                     <input type="text" id="motif" placeholder="Ex: Revue de projet / Panne projecteur" required>
                 </div>
 
-                <!-- Créneaux Horaires : Heure de début et Fin -->
-                <div class="form-group">
-                    <label for="heure-debut">Heure de début :</label>
-                    <input type="time" id="heure-debut" required>
-                </div>
+                <!-- Créneaux Horaires alignés -->
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="heure-debut">Heure de début :</label>
+                        <input type="time" id="heure-debut" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="heure-fin">Heure de fin :</label>
-                    <input type="time" id="heure-fin" required>
+                    <div class="form-group">
+                        <label for="heure-fin">Heure de fin :</label>
+                        <input type="time" id="heure-fin" required>
+                    </div>
                 </div>
 
                 <div class="form-group">
