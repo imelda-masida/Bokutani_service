@@ -1,3 +1,6 @@
+/* ----------------------------------------------------
+   1. REGLES GLOBALES & REINITIALISATION
+---------------------------------------------------- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -16,7 +19,9 @@ body {
     padding: 30px 20px;
 }
 
-
+/* ----------------------------------------------------
+   2. ENTÊTE & LOGO
+---------------------------------------------------- */
 .logo-wrapper {
     width: 100%;
     display: flex;
@@ -25,10 +30,10 @@ body {
 }
 
 .floating-logo {
-    width: 620px; 
+    width: 100%;
+    max-width: 620px; 
     height: auto;
 }
-
 
 header {
     text-align: center;
@@ -46,6 +51,12 @@ header h1 {
     padding: 8px 16px;
     border-radius: 20px;
     display: inline-block;
+    backdrop-filter: blur(5px);
+}
+
+.role-selector label {
+    margin-right: 8px;
+    font-size: 0.9rem;
 }
 
 .role-selector select {
@@ -53,9 +64,14 @@ header h1 {
     border-radius: 4px;
     border: none;
     font-weight: bold;
+    color: #021068;
+    background-color: #ffffff;
+    cursor: pointer;
 }
 
-/* Cartes des salles */
+/* ----------------------------------------------------
+   3. CARTES DES SALLES DE RÉUNION
+---------------------------------------------------- */
 .meet-room {
     display: flex;
     justify-content: center;
@@ -75,47 +91,86 @@ header h1 {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.salle:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+}
+
+.salle h2 {
+    color: #021068;
+    font-size: 1.4rem;
+}
+
+/* Badges de Statut */
 .status {
     font-weight: bold;
-    padding: 4px 12px;
-    border-radius: 4px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .badge-libre { background-color: #28a745; color: white; }
 .badge-occupee { background-color: #dc3545; color: white; }
-.badge-maintenance { background-color: #ffc107; color: black; }
+.badge-maintenance { background-color: #ffc107; color: #212529; }
 
+/* Bloc de détails sur la salle occupée */
 .details-occupation {
     background-color: #f8f9fa;
-    border-left: 3px solid #021068;
-    padding: 10px;
+    border-left: 4px solid #021068;
+    padding: 10px 12px;
     border-radius: 4px;
     font-size: 0.85rem;
     width: 100%;
     text-align: left;
+    line-height: 1.5;
+    color: #495057;
 }
 
-.actions { width: 100%; }
+.details-occupation strong {
+    color: #021068;
+}
 
+.actions { 
+    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ----------------------------------------------------
+   4. BOUTONS GENERAUX
+---------------------------------------------------- */
 button {
     width: 100%;
-    padding: 10px;
+    padding: 10px 14px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #021068;
     color: white;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-button:hover { opacity: 0.9; }
+button:hover { 
+    opacity: 0.9; 
+}
+
 .btn-cancel { background-color: #dc3545; }
-.btn-pdf { background-color: #17a2b8; margin-top: 10px; }
+.btn-pdf { background-color: #17a2b8; margin-top: 15px; }
+.btn-confirm { background-color: #28a745; }
+.btn-close { background-color: #6c757d; }
 
-
+/* ----------------------------------------------------
+   5. ESPACE ADMINISTRATION
+---------------------------------------------------- */
 .admin-panel {
     margin-top: 30px;
     width: 100%;
@@ -125,39 +180,148 @@ button:hover { opacity: 0.9; }
 .admin-content {
     background: white;
     color: #333;
-    padding: 20px;
+    padding: 25px;
     border-radius: 8px;
     text-align: left;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.admin-content h3 {
+    color: #021068;
+    margin-bottom: 8px;
 }
 
 #historique-liste {
-    max-height: 180px;
+    max-height: 200px;
     overflow-y: auto;
     margin: 15px 0;
     padding-left: 20px;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #444;
 }
 
-/* Modale */
+#historique-liste li {
+    margin-bottom: 6px;
+}
+
+/* ----------------------------------------------------
+   6. MODALE ET FORMULAIRE DE RÉSERVATION
+---------------------------------------------------- */
 .hidden { display: none !important; }
 
 .modal {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex; justify-content: center; align-items: center;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(3px);
 }
 
 .modal-content {
-    background: white; color: #333; padding: 25px;
-    border-radius: 8px; width: 320px;
+    background: white; 
+    color: #333; 
+    padding: 25px 30px;
+    border-radius: 10px; 
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    animation: fadeInModal 0.25s ease-out;
 }
 
-.form-group { margin-bottom: 12px; text-align: left; }
-.form-group label { font-size: 0.85rem; font-weight: bold; display: block; margin-bottom: 4px; }
-.form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+@keyframes fadeInModal {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
 
-.modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
-.btn-confirm { background-color: #28a745; }
-.btn-close { background-color: #6c757d; }
+.modal-content h3 {
+    color: #021068;
+    font-size: 1.3rem;
+    margin-bottom: 18px;
+    text-align: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* Champs du formulaire */
+.form-group { 
+    margin-bottom: 14px; 
+    text-align: left; 
+}
+
+.form-group label { 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    display: block; 
+    margin-bottom: 5px; 
+    color: #444;
+}
+
+.form-group input, 
+.form-group select { 
+    width: 100%; 
+    padding: 9px 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    background-color: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    outline: none;
+    border-color: #021068;
+    box-shadow: 0 0 0 3px rgba(2, 16, 104, 0.15);
+    background-color: #ffffff;
+}
+
+/* Disposition côte à côte pour l'heure de début et de fin */
+.form-group-inline {
+    display: flex;
+    gap: 12px;
+}
+
+.form-group-inline .form-group {
+    flex: 1;
+}
+
+/* Icône personnalisée pour le sélecteur d'heure (navigateurs WebKit) */
+.form-group input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(12%) sepia(85%) saturate(3000%) hue-rotate(220deg);
+}
+
+.modal-buttons { 
+    display: flex; 
+    gap: 12px; 
+    margin-top: 20px; 
+}
+
+/* ----------------------------------------------------
+   7. ADAPTABILITÉ MOBILES (RESPONSIVE)
+---------------------------------------------------- */
+@media (max-width: 480px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+        margin: 0 15px;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+}

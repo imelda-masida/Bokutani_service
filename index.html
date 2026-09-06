@@ -11,7 +11,6 @@
 </head>
 <body>
 
-    
     <div class="logo-wrapper">
         <img src="https://group-tia.com/wp-content/uploads/2024/04/logo-GROUP-tia-inverse.png" alt="Logo Group TIA" class="floating-logo">
     </div>
@@ -32,6 +31,7 @@
 
     <main class="meet-room">
         
+        <!-- SALLE A -->
         <div class="salle" id="card-salle-a">
             <h2>SALLE A</h2>
             <span class="status badge-libre" id="status-salle-a">Libre</span>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        
+        <!-- SALLE B -->
         <div class="salle" id="card-salle-b">
             <h2>SALLE B</h2>
             <span class="status badge-libre" id="status-salle-b">Libre</span>
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        
+        <!-- SALLE C -->
         <div class="salle" id="card-salle-c">
             <h2>SALLE C</h2>
             <span class="status badge-libre" id="status-salle-c">Libre</span>
@@ -65,7 +65,7 @@
         </div>
     </main>
 
-    
+    <!-- ESPACE ADMINISTRATION -->
     <section id="admin-panel" class="admin-panel hidden">
         <div class="admin-content">
             <h3>Espace Administration</h3>
@@ -75,7 +75,7 @@
         </div>
     </section>
 
-    
+    <!-- FORMULAIRE MODAL -->
     <div id="modal-form" class="modal hidden">
         <div class="modal-content">
             <h3 id="modal-title">Créer une réservation</h3>
@@ -100,9 +100,15 @@
                     <input type="text" id="motif" placeholder="Ex: Revue de projet / Panne projecteur" required>
                 </div>
 
+                <!-- Créneaux Horaires : Heure de début et Fin -->
                 <div class="form-group">
-                    <label for="duree">Durée (minutes) :</label>
-                    <input type="number" id="duree" min="1" value="30" required>
+                    <label for="heure-debut">Heure de début :</label>
+                    <input type="time" id="heure-debut" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="heure-fin">Heure de fin :</label>
+                    <input type="time" id="heure-fin" required>
                 </div>
 
                 <div class="form-group">
