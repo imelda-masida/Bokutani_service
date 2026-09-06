@@ -1,26 +1,31 @@
-
 const ADMIN_PASSWORD_CORRECT = "1234";
-
-
 let roleActuel = "UTILISATEUR";
 
-const etatSalles = {
+// 1. Chargement de l'état initial depuis le localStorage
+let etatSalles = JSON.parse(localStorage.getItem('bokutani_salles')) || {
     "SALLE A": { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" },
     "SALLE B": { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" },
     "SALLE C": { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" }
 };
 
-const historiqueGlobal = [];
+let historiqueGlobal = JSON.parse(localStorage.getItem('bokutani_historique')) || [];
 
-// Demande de permission pour les notifications du navigateur
+// 2. Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
     if ("Notification" in window && Notification.permission !== "granted") {
         Notification.requestPermission();
     }
-    rafraichirToutesLesSalles();
+
+    verifierEtRafraichir();
+    setInterval(verifierEtRafraichir, 5000); // Mise à jour dynamique toutes les 5 secondes
 });
 
+function sauvegarderDonnees() {
+    localStorage.setItem('bokutani_salles', JSON.stringify(etatSalles));
+    localStorage.setItem('bokutani_historique', JSON.stringify(historiqueGlobal));
+}
 
+// 3. Gestion des Rôles
 function changerRole() {
     const select = document.getElementById("user-role");
     const roleSelectionne = select.value;
@@ -41,11 +46,10 @@ function changerRole() {
     }
 }
 
-// Formulaire Modale (Ouverture/Fermeture)
+// 4. Modale (Ouverture / Fermeture)
 function ouvrirFormulaire(nomSalle) {
     const salle = etatSalles[nomSalle];
 
-    // Vérifier si la salle est occupée
     if (salle.status !== "Libre" && Date.now() < salle.endTime) {
         alert(`${nomSalle} est actuellement ${salle.status.toLowerCase()} par ${salle.author}.`);
         return;
@@ -71,69 +75,86 @@ function fermerFormulaire() {
     document.getElementById("booking-form").reset();
 }
 
-// Validation de Réservation & Anti-Chevauchement
+// 5. Validation par Heures (Debut / Fin)
 document.getElementById("booking-form").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const nomSalle = document.getElementById("salle-nom").value;
     const author = document.getElementById("auteur").value.trim();
     const purpose = document.getElementById("motif").value.trim();
-    const dureeMin = parseInt(document.getElementById("duree").value);
+    const heureDebutStr = document.getElementById("heure-debut").value; // ex: "14:00"
+    const heureFinStr = document.getElementById("heure-fin").value;     // ex: "15:30"
     const pin = document.getElementById("pin-code").value.trim();
-    const dept = document.getElementById("dept-select").value;
+    const deptSelect = document.getElementById("dept-select");
+    const dept = deptSelect ? deptSelect.value : "N/A";
 
-    const maintentanceMode = (roleActuel === "MAINTENANCE");
-    const start = Date.now();
-    const end = start + (dureeMin * 60 * 1000);
+    // Convertir les heures "HH:MM" de la journée actuelle en horodatage ms
+    const aujourdhui = new Date();
+    const [hDebut, mDebut] = heureDebutStr.split(":").map(Number);
+    const [hFin, mFin] = heureFinStr.split(":").map(Number);
 
-    // Détection de conflit horaire
+    const start = new Date(aujourdhui.getFullYear(), aujourdhui.getMonth(), aujourdhui.getDate(), hDebut, mDebut).getTime();
+    const end = new Date(aujourdhui.getFullYear(), aujourdhui.getMonth(), aujourdhui.getDate(), hFin, mFin).getTime();
+
+    // Contrôles de validité des horaires
+    if (end <= start) {
+        alert("L'heure de fin doit être supérieure à l'heure de début.");
+        return;
+    }
+
+    const dureeMin = Math.round((end - start) / (1000 * 60));
+
+    // Détection de conflit d'occupation
     const salleActuelle = etatSalles[nomSalle];
-    if (salleActuelle.status !== "Libre" && start < salleActuelle.endTime) {
+    if (salleActuelle.status !== "Libre" && Date.now() < salleActuelle.endTime) {
         alert("Conflit ! La salle est déjà occupée sur cette période.");
         return;
     }
 
-    // Mise à jour de la salle
-    const typeAction = maintentanceMode ? "MAINTENANCE" : "REUNION";
-    const statusText = maintentanceMode ? "Maintenance" : "Occupée";
+    const maintenanceMode = (roleActuel === "MAINTENANCE");
+    const statusText = maintenanceMode ? "Maintenance" : "Occupée";
+    const typeAction = maintenanceMode ? "MAINTENANCE" : "REUNION";
 
+    // Mise à jour de l'état
     etatSalles[nomSalle] = {
         status: statusText,
-        author: maintentanceMode ? `[${dept}] ${author}` : author,
+        author: maintenanceMode ? `[${dept}] ${author}` : author,
         purpose: purpose,
         type: typeAction,
-        dept: maintentanceMode ? dept : "N/A",
+        dept: maintenanceMode ? dept : "N/A",
         startTime: start,
         endTime: end,
+        horaire: `${heureDebutStr} - ${heureFinStr}`,
         pin: pin
     };
 
-    // Ajout dans l'historique admin
+    // Historique
     historiqueGlobal.push({
         salle: nomSalle,
         type: statusText,
         author: etatSalles[nomSalle].author,
         purpose: purpose,
         duree: dureeMin,
-        date: new Date().toLocaleString()
+        horaire: `${heureDebutStr} - ${heureFinStr}`,
+        date: new Date().toLocaleDateString('fr-FR')
     });
 
-    // Programmer les alertes de fin (-10 min et -5 min)
-    programmerAlertes(nomSalle, dureeMin);
+    programmerAlertes(nomSalle, end);
 
-    rafraichirSalleUI(nomSalle);
+    sauvegarderDonnees();
+    verifierEtRafraichir();
     if (roleActuel === "ADMIN") rafraichirHistoriqueUI();
     fermerFormulaire();
 });
 
-// 4. Notifications Automatiques (-10 min et -5 min)
-function programmerAlertes(nomSalle, dureeMin) {
+// 6. Alertes basées sur le temps absolu jusqu'à l'heure de fin
+function programmerAlertes(nomSalle, endTime) {
     if (!("Notification" in window) || Notification.permission !== "granted") return;
 
-    const totalMs = dureeMin * 60 * 1000;
+    const msAvantFin = endTime - Date.now();
 
-    // Alerte à 10 minutes de la fin
-    const delay10 = totalMs - (10 * 60 * 1000);
+    // Alerte -10 min
+    const delay10 = msAvantFin - (10 * 60 * 1000);
     if (delay10 > 0) {
         setTimeout(() => {
             new Notification("Bokutani - Rappel", {
@@ -142,8 +163,8 @@ function programmerAlertes(nomSalle, dureeMin) {
         }, delay10);
     }
 
-    // Alerte à 5 minutes de la fin
-    const delay5 = totalMs - (5 * 60 * 1000);
+    // Alerte -5 min
+    const delay5 = msAvantFin - (5 * 60 * 1000);
     if (delay5 > 0) {
         setTimeout(() => {
             new Notification("Bokutani - Libération Imminente", {
@@ -153,21 +174,38 @@ function programmerAlertes(nomSalle, dureeMin) {
     }
 }
 
-// 5. Annulation par Code PIN
+// 7. Annulation par Code PIN
 function demanderAnnulation(nomSalle) {
     const salle = etatSalles[nomSalle];
     const pinSaisi = prompt(`Entrez votre code PIN à 4 chiffres pour annuler la réservation de ${nomSalle} :`);
 
     if (pinSaisi === salle.pin || roleActuel === "ADMIN") {
         etatSalles[nomSalle] = { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" };
-        rafraichirSalleUI(nomSalle);
+        sauvegarderDonnees();
+        verifierEtRafraichir();
         alert(`${nomSalle} a été libérée avec succès.`);
     } else if (pinSaisi !== null) {
         alert("Code PIN incorrect. Opération refusée.");
     }
 }
 
-// Mise à jour de l'affichage (DOM)
+// 8. Nettoyage et Affichage UI
+function verifierEtRafraichir() {
+    const maintenant = Date.now();
+
+    Object.keys(etatSalles).forEach(nomSalle => {
+        const salle = etatSalles[nomSalle];
+
+        // Libération automatique à la fin du créneau
+        if (salle.endTime && maintenant >= salle.endTime) {
+            etatSalles[nomSalle] = { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" };
+            sauvegarderDonnees();
+        }
+
+        rafraichirSalleUI(nomSalle);
+    });
+}
+
 function rafraichirSalleUI(nomSalle) {
     const key = nomSalle.toLowerCase().replace(" ", "-");
     const salle = etatSalles[nomSalle];
@@ -176,10 +214,7 @@ function rafraichirSalleUI(nomSalle) {
     const details = document.getElementById(`details-${key}`);
     const btnCancel = document.getElementById(`btn-cancel-${key}`);
 
-    // Vérifier l'expiration automatique
-    if (salle.endTime && Date.now() >= salle.endTime) {
-        etatSalles[nomSalle] = { status: "Libre", author: "", purpose: "", type: "", dept: "", startTime: null, endTime: null, pin: "" };
-    }
+    if (!badge || !details || !btnCancel) return;
 
     if (salle.status === "Libre") {
         badge.innerText = "Libre";
@@ -190,30 +225,33 @@ function rafraichirSalleUI(nomSalle) {
         badge.innerText = salle.status;
         badge.className = "status " + (salle.status === "Occupée" ? "badge-occupee" : "badge-maintenance");
 
-        const minRestantes = Math.max(0, Math.round((salle.endTime - Date.now()) / 60000));
-        details.innerHTML = `<strong>Auteur:</strong> ${salle.author}<br><strong>Motif:</strong> ${salle.purpose}<br><strong>Temps restant:</strong> ~${minRestantes} min`;
+        const msRestants = salle.endTime - Date.now();
+        const minRestantes = Math.max(0, Math.ceil(msRestants / 60000));
+
+        details.innerHTML = `
+            <strong>Auteur :</strong> ${salle.author}<br>
+            <strong>Motif :</strong> ${salle.purpose}<br>
+            <strong>Horaire :</strong> ${salle.horaire}<br>
+            <strong>Temps restant :</strong> ~${minRestantes} min
+        `;
         details.classList.remove("hidden");
         btnCancel.classList.remove("hidden");
     }
 }
 
-function rafraichirToutesLesSalles() {
-    rafraichirSalleUI("SALLE A");
-    rafraichirSalleUI("SALLE B");
-    rafraichirSalleUI("SALLE C");
-}
-
 function rafraichirHistoriqueUI() {
     const liste = document.getElementById("historique-liste");
+    if (!liste) return;
+
     liste.innerHTML = "";
     historiqueGlobal.forEach(item => {
         const li = document.createElement("li");
-        li.innerText = `[${item.date}] ${item.salle} | ${item.type} par ${item.author} (${item.duree} min)`;
+        li.innerText = `[${item.date}] ${item.salle} | ${item.type} par ${item.author} (${item.horaire}) - ${item.purpose}`;
         liste.appendChild(li);
     });
 }
 
-// Génération du Rapport PDF Hebdomadaire
+// 9. Génération du PDF
 function genererPDFHebdomadaire() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -224,7 +262,7 @@ function genererPDFHebdomadaire() {
 
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text(`Rapport édité le : ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Rapport édité le : ${new Date().toLocaleString('fr-FR')}`, 14, 28);
     doc.text("--------------------------------------------------------------------------------------------------", 14, 33);
 
     let y = 42;
@@ -232,8 +270,9 @@ function genererPDFHebdomadaire() {
         doc.text("Aucun enregistrement disponible pour cette période.", 14, y);
     } else {
         historiqueGlobal.forEach((item, i) => {
+            if (y > 270) { doc.addPage(); y = 20; }
             doc.text(`${i + 1}. ${item.salle} - ${item.type} | Responsable: ${item.author}`, 14, y);
-            doc.text(`   Motif: ${item.purpose} | Durée: ${item.duree} min | Date: ${item.date}`, 14, y + 6);
+            doc.text(`   Motif: ${item.purpose} | Plage: ${item.horaire} (${item.duree} min) | Date: ${item.date}`, 14, y + 6);
             y += 14;
         });
     }
