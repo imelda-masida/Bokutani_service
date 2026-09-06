@@ -1,6 +1,4 @@
-/* ----------------------------------------------------
-   1. REGLES GLOBALES & REINITIALISATION
----------------------------------------------------- */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -19,9 +17,7 @@ body {
     padding: 30px 20px;
 }
 
-/* ----------------------------------------------------
-   2. ENTÊTE & LOGO
----------------------------------------------------- */
+
 .logo-wrapper {
     width: 100%;
     display: flex;
@@ -69,9 +65,7 @@ header h1 {
     cursor: pointer;
 }
 
-/* ----------------------------------------------------
-   3. CARTES DES SALLES DE RÉUNION
----------------------------------------------------- */
+
 .meet-room {
     display: flex;
     justify-content: center;
@@ -105,7 +99,7 @@ header h1 {
     font-size: 1.4rem;
 }
 
-/* Badges de Statut */
+
 .status {
     font-weight: bold;
     padding: 6px 14px;
@@ -119,7 +113,7 @@ header h1 {
 .badge-occupee { background-color: #dc3545; color: white; }
 .badge-maintenance { background-color: #ffc107; color: #212529; }
 
-/* Bloc de détails sur la salle occupée */
+
 .details-occupation {
     background-color: #f8f9fa;
     border-left: 4px solid #021068;
@@ -143,9 +137,7 @@ header h1 {
     gap: 8px;
 }
 
-/* ----------------------------------------------------
-   4. BOUTONS GENERAUX
----------------------------------------------------- */
+
 button {
     width: 100%;
     padding: 10px 14px;
@@ -170,9 +162,7 @@ button:hover {
 .btn-clear-history { background-color: #6c757d; }
 .btn-clear-history:hover { background-color: #5a6268; }
 
-/* ----------------------------------------------------
-   5. DASHBOARD ADMINISTRATEUR
----------------------------------------------------- */
+
 .admin-panel {
     width: 100%;
     max-width: 900px;
@@ -195,7 +185,7 @@ button:hover {
     padding-bottom: 10px;
 }
 
-/* Statistiques */
+
 .admin-stats {
     display: flex;
     gap: 20px;
@@ -258,7 +248,7 @@ button:hover {
     background-color: #dc3545;
 }
 
-/* Historique */
+
 #historique-liste {
     max-height: 200px;
     overflow-y: auto;
@@ -296,7 +286,7 @@ button:hover {
     flex: 1;
 }
 
-/* Formulaire de Sécurité */
+
 .admin-password-form {
     background: #f8f9fa;
     padding: 15px;
@@ -311,9 +301,7 @@ button:hover {
     padding: 8px 16px;
 }
 
-/* ----------------------------------------------------
-   6. MODALE ET FORMULAIRE DE RÉSERVATION
----------------------------------------------------- */
+
 .hidden { display: none !important; }
 
 .modal {
@@ -406,9 +394,7 @@ button:hover {
     margin-top: 20px; 
 }
 
-/* ----------------------------------------------------
-   7. RESPONSIVE
----------------------------------------------------- */
+
 @media (max-width: 600px) {
     body { padding: 20px 10px; }
     header h1 { font-size: 1.8rem; }
